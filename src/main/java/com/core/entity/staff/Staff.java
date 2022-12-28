@@ -6,18 +6,18 @@ import java.util.Date;
 
 @Entity
 @Data
+@Table(schema = "hr")
 public class Staff  extends AuditableModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer staffId;
-    private Integer employeeCode;
+    private String employeeCode;
     private String staffName;
-    private String emilId;
+    private String email;
     private String phoneNumber;
     private String address;
     private Integer department;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private Integer companyId;
     private Integer status;
 }

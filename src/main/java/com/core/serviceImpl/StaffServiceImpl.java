@@ -1,6 +1,7 @@
 package com.core.serviceImpl;
 import com.core.entity.staff.Staff;
 import com.core.repository.StaffRepository;
+import com.core.service.CompanyService;
 import com.core.service.CrudService;
 import com.core.service.StaffService;
 import com.core.util.SecurityUtil;
@@ -13,7 +14,10 @@ import java.util.Date;
 public class StaffServiceImpl extends CrudService implements StaffService {
 
     @Autowired
-    StaffRepository staffRepository;
+    private  StaffRepository staffRepository;
+
+    @Autowired
+    private CompanyService companyService;
 
     @Override
     public Staff createStaff(Staff staff) {
@@ -29,12 +33,14 @@ public class StaffServiceImpl extends CrudService implements StaffService {
     public Staff preCreate(Staff staff) {
         staff.setDateCreated(new Date());
         staff.setStaffCreated(SecurityUtil.getCurrentUserId());
+        staff.setCompanyId(companyService.getCurrentCompanyId());
         return  staff;
     }
 
     public Staff preUpdate(Staff staff) {
         staff.setDateUpdated(new Date());
         staff.setStaffUpdated(SecurityUtil.getCurrentUserId());
+        staff.setCompanyId(companyService.getCurrentCompanyId());
         return staff;
     }
 

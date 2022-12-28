@@ -21,7 +21,7 @@ public class AccessTokenUserDetailsService implements AuthenticationUserDetailsS
     private TokenGenerator tokenGenerator;
 
     @Autowired
-    private UserAccountRepository userRepository;
+    private UserAccountRepository userAccountRepository;
 
     @Autowired
     private LanguageUtil languageUtil;
@@ -40,10 +40,9 @@ public class AccessTokenUserDetailsService implements AuthenticationUserDetailsS
         } catch (TokenExpiredException e) {
             throw new UsernameNotFoundException("Access token expired", e);
         }
-
         int userId = Integer.parseInt(status.data.trim());
-        UserAccount user = userRepository.findByUserId(userId).orElse(null);
-        if (UserAccountStatusEnum.ACTIVE.value != user.getStatus()) {
+        UserAccount userAccount = userAccountRepository.findById(userId).orElse(null);
+        if (UserAccountStatusEnum.ACTIVE.value != userAccount.getStatus()) {
             throw new UsernameNotFoundException(languageUtil.getTranslatedText("access.token.expired", null, "en"));
         }
         return new AccessTokenUserDetails(userId);

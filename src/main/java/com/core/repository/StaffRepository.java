@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface StaffRepository extends CrudRepository<Staff, Integer> {
 
-
     @Query(value = "SELECT * FROM staff_view WHERE staff_id=?1", nativeQuery = true)
     StaffView getStaffViewById(Integer staffId);
 }
