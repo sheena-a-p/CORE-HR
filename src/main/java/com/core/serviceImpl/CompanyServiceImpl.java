@@ -4,7 +4,6 @@ import com.core.repository.CompanyRepository;
 import com.core.service.CompanyService;
 import com.core.service.CrudService;
 import com.core.service.UserAccountService;
-import com.core.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +33,7 @@ public class CompanyServiceImpl extends CrudService implements CompanyService {
     }
 
     @Override
-    public Integer getCurrentCompanyId() {
-        System.out.println("77777777777777 : "+(SecurityUtil.getCurrentUserId()));
-        return userAccountService.getById(SecurityUtil.getCurrentUserId()).getCompanyId();
+    public Integer getCurrentCompanyId(Integer userId) {
+        return userAccountService.getById(userId).getCompanyId();
     }
 }

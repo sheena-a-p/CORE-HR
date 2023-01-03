@@ -3,11 +3,11 @@ import com.core.entity.system.Company;
 
 public interface CompanyService {
 
-    public Company createCompany(Company company);
+    Company createCompany(Company company);
 
-    public Company updateCompany(Company company);
+    Company updateCompany(Company company);
 
-    public Company getById(Integer companuId);
+    Company getById(Integer companuId);
 
-    Integer getCurrentCompanyId();
+    Integer getCurrentCompanyId(Integer userId);
 }

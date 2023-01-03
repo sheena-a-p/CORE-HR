@@ -4,7 +4,6 @@ import com.core.repository.StaffRepository;
 import com.core.service.CompanyService;
 import com.core.service.CrudService;
 import com.core.service.StaffService;
-import com.core.util.SecurityUtil;
 import com.core.view.StaffView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,32 +19,38 @@ public class StaffServiceImpl extends CrudService implements StaffService {
     private CompanyService companyService;
 
     @Override
-    public Staff createStaff(Staff staff) {
+    public void createStaff(Staff staff) {
         preCreate(staff);
-       return staffRepository.save(staff);
+        staffRepository.save(staff);
     }
 
     @Override
-    public Staff updateStaff(Staff staff) {
-        return  preUpdate(staff);
+    public void updateStaff(Staff staff) {
+        Staff staffDetails = staffRepository.findById(staff.getStaffId()).orElseThrow(() ->{
+            throw new NullPointerException("Staff not found !");
+        });
+        staffDetails = preUpdate(staffDetails);
+        staffRepository.save(staffDetails);
+
     }
 
     public Staff preCreate(Staff staff) {
         staff.setDateCreated(new Date());
-        staff.setStaffCreated(SecurityUtil.getCurrentUserId());
-        staff.setCompanyId(companyService.getCurrentCompanyId());
+        staff.setDateModified(new Date());
+        staff.setStaffCreated(1);
+        staff.setStaffModified(1);
+        staff.setCompanyId(1);
         return  staff;
     }
 
     public Staff preUpdate(Staff staff) {
-        staff.setDateUpdated(new Date());
-        staff.setStaffUpdated(SecurityUtil.getCurrentUserId());
-        staff.setCompanyId(companyService.getCurrentCompanyId());
+        staff.setDateModified(new Date());
+        staff.setStaffModified(1);
         return staff;
     }
 
     @Override
-    public StaffView getView(Integer staffId){
+    public StaffView getStaffView(Integer staffId){
         return  staffRepository.getStaffViewById(staffId);
     }
 }

@@ -8,12 +8,13 @@ import javax.persistence.*;
 public class UserAccount extends AuditableModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Integer userId;
-    private  String userName;
+    private Integer userId;
+    private Integer staffId;
+    private String userName;
     private String email;
-    private  String password;
-    private  String passwordToken;
-    private  String verificationToken;
+    private String password;
+    private String passwordToken;
+    private String verificationToken;
     private Integer companyId;
     private Integer status;
 }

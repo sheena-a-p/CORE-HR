@@ -2,7 +2,6 @@ package com.core.entity.staff;
 import com.core.entity.system.AuditableModel;
 import lombok.Data;
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Data
@@ -20,4 +19,13 @@ public class Staff  extends AuditableModel {
     private String dateOfBirth;
     private Integer companyId;
     private Integer status;
+
+    public void updateStaff(Staff staff){
+        this.staffName = staff.getStaffName();
+        this.email = staff.getEmail();
+        this.phoneNumber = staff.getPhoneNumber();
+        this.address = staff.getAddress();
+        this.department = staff.getDepartment();
+        this.dateOfBirth = staff.getDateOfBirth();
+    }
 }

@@ -69,19 +69,31 @@ ALTER TABLE system.user_account ADD FOREIGN KEY(company_id) REFERENCES org.compa
 -- Alter table user_account to add column email
 ALTER TABLE system.user_account ADD COLUMN email TEXT NOT NULL;
 
+-- 28/12/2022 03:15 PM SHEENA AP
+-- Insert values to status codes for company context
 INSERT INTO public.status_code (status_code,status_name,status_code_context,notes) values
-(110,'Active User','User account',' '),
-(111,'Inactive User','User account',' ');
+(110,'Active Company','Company',' '),
+(111,'Inactive Company','Company',' ');
 
+-- 28/12/2022 03:15 PM SHEENA AP
+-- Insert values to company table
 INSERT INTO org.company(company_code,company_name,status,created_at,update_at) VALUES('INV','Innovature Software Labs',110,'2020-11-01 17:03:06','2020-11-01 17:03:06');
 
+-- 28/12/2022 03:15 PM SHEENA AP
+-- Insert values to user
 INSERT INTO system.user_account (user_name,password,email,status,company_id,created_by,updated_by,created_at,update_at) VALUES('Sheena','123456','sheena.ap@innovaturelabs.com',100,1,1,1,'2020-11-01 17:03:06','2020-11-01 17:03:06');
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Update company to set created_by and updated_by
 UPDATE org.company SET created_by=1,updated_by=1;
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Alter company to set not null constraint to created_by and updated_by
 ALTER TABLE  org.company ALTER COLUMN created_by SET NOT NULL;
 ALTER TABLE  org.company ALTER COLUMN updated_by SET NOT NULL;
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Create table staff
 CREATE TABLE hr.staff(
 staff_id SERIAL NOT NULL PRIMARY KEY,
 staff_name TEXT NOT NULL,
@@ -91,6 +103,8 @@ company_id INTEGER NOT NULL REFERENCES org.company(company_id),
 created_at timestamp without time zone NOT NULL,
 update_at timestamp without time zone NOT NULL);
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Alter table staff to add columns created_by,updated_by,email,address,date_of_birth,department,phone_number
 ALTER TABLE hr.staff ADD COLUMN created_by INTEGER REFERENCES hr.staff(staff_id);
 ALTER TABLE hr.staff ADD COLUMN updated_by INTEGER REFERENCES hr.staff(staff_id);
 ALTER TABLE hr.staff ADD COLUMN email TEXT NOT NULL UNIQUE;
@@ -99,9 +113,41 @@ ALTER TABLE hr.staff ADD COLUMN date_of_birth TEXT;
 ALTER TABLE hr.staff ADD COLUMN department INTEGER NOT NULL;
 ALTER TABLE hr.staff ADD COLUMN phone_number TEXT NOT NULL;
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Alter table staff to rename columns
+ALTER TABLE hr.staff RENAME COLUMN created_at TO date_created;
+ALTER TABLE hr.staff RENAME COLUMN update_at TO date_modified;
+ALTER TABLE hr.staff RENAME COLUMN created_by TO staff_created;
+ALTER TABLE hr.staff RENAME COLUMN updated_by TO staff_modified;
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Alter table company to rename columns
+ALTER TABLE org.company RENAME COLUMN created_at TO date_created;
+ALTER TABLE org.company RENAME COLUMN update_at TO date_modified;
+ALTER TABLE org.company RENAME COLUMN created_by TO staff_created;
+ALTER TABLE org.company RENAME COLUMN updated_by TO staff_modified;
 
+-- 28/12/2022 04:00 PM SHEENA AP
+-- Alter table usr account to rename columns
+ALTER TABLE system.user_account RENAME COLUMN created_at TO date_created;
+ALTER TABLE system.user_account RENAME COLUMN update_at TO date_modified;
+ALTER TABLE system.user_account RENAME COLUMN created_by TO staff_created;
+ALTER TABLE system.user_account RENAME COLUMN updated_by TO staff_modified;
 
+-- 30/12/2022 03:15 PM SHEENA AP
+-- Insert values to status codes for staff
+INSERT INTO public.status_code (status_code,status_name,status_code_context,notes) values
+(120,'Active Staff','Staff',' '),
+(121,'Inactive Staff','Staff',' ');
+
+-- 30/12/2022 03:15 PM SHEENA AP
+-- Insert values to staff table
+INSERT INTO hr.staff (staff_id,staff_name,employee_code,status,company_id,date_created,date_modified,staff_created,staff_modified,email,address,date_of_birth,department,phone_number)
+VALUES(1,'System Admin','INV-0001',120,1,'2020-11-01 17:03:06','2020-11-01 17:03:06',1,1,'admin@gmail.com','Test Address','01/01/2011',1,'7845129636');
+
+-- 30/12/2022 03:15 PM SHEENA AP
+-- Alter table user account to add column
+ALTER TABLE system.user_account add COLUMN staff_id INTEGER NOT NULL REFERENCES hr.staff(staff_id) DEFAULT 1;
 
 
 
