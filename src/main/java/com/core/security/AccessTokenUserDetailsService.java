@@ -1,12 +1,12 @@
 package com.core.security;
 import com.core.entity.system.UserAccount;
 import com.core.entity.system.UserAccountStatusEnum;
+import com.core.exception.InvalidTokenException;
+import com.core.exception.TokenExpiredException;
 import com.core.repository.UserAccountRepository;
-import com.core.security.util.InvalidTokenException;
-import com.core.security.util.TokenExpiredException;
-import com.core.security.util.TokenGenerator;
 import com.core.util.LanguageUtil;
-import com.core.security.util.TokenGenerator.Status;
+import com.core.util.TokenGenerator;
+import com.core.util.TokenGenerator.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,10 +41,10 @@ public class AccessTokenUserDetailsService implements AuthenticationUserDetailsS
             throw new UsernameNotFoundException("Access token expired", e);
         }
         int userId = Integer.parseInt(status.data.trim());
-        UserAccount userAccount = userAccountRepository.findById(userId).orElse(null);
-        if (UserAccountStatusEnum.ACTIVE.value != userAccount.getStatus()) {
+        UserAccount userAccount = userAccountRepository.findByUserId(userId).orElse(null);
+        if (UserAccountStatusEnum.ACTIVE.getValue() != userAccount.getStatus()) {
             throw new UsernameNotFoundException(languageUtil.getTranslatedText("access.token.expired", null, "en"));
         }
-        return new AccessTokenUserDetails(userId);
+        return new AccessTokenUserDetails(userId,userAccount.getStaffId(),userAccount.getCompanyId());
     }
 }

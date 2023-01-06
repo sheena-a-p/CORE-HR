@@ -1,10 +1,15 @@
 package com.core.service;
 import com.core.entity.system.UserAccount;
 import com.core.form.UserLoginForm;
+import com.core.view.LoginView;
 
 public interface UserAccountService {
 
-    public  void  userLogin(UserLoginForm userLoginForm);
+    void createUserAccount(UserAccount userAccount);
 
-    public UserAccount getById(Integer userId);
+    void updateUserAccount(UserAccount userAccount);
+
+    LoginView userLogin(UserLoginForm userLoginForm);
+
+    UserAccount getById(Integer userId);
 }

@@ -8,5 +8,7 @@ public interface StaffService {
 
     void updateStaff(Staff staff);
 
+    Staff getStaff(Integer staffId);
+
     StaffView getStaffView(Integer staffId);
 }

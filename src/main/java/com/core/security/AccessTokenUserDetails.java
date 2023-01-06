@@ -12,22 +12,15 @@ import java.util.List;
 public class AccessTokenUserDetails implements UserDetails {
 
     private static final List<GrantedAuthority> ROLES = AuthorityUtils.createAuthorityList("ROLE_USER");
-
     public final int userId;
+    public final int staffId;
+    public final int companyId;
     private String userRole;
-    public AccessTokenUserDetails(int userId) {
+
+    public AccessTokenUserDetails(int userId,int staffId,int companyId) {
         this.userId = userId;
-//        switch (role) {
-//            case 1:
-//                userRole = "EMPLOYEE";
-//                break;
-//            case 2:
-//
-//                userRole = "ADMIN";
-//                break;
-//            default:
-//                break;
-//        }
+        this.staffId = staffId;
+        this.companyId = companyId;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

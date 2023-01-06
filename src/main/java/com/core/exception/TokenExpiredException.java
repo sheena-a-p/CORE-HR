@@ -1,6 +1,7 @@
-package com.core.security.util;
+package com.core.exception;
 
-public class TokenExpiredException extends IllegalArgumentException{
+public class TokenExpiredException extends IllegalArgumentException {
+
     public TokenExpiredException(String s) {
         super(s);
     }

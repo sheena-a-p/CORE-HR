@@ -10,11 +10,12 @@ public class UserAccount extends AuditableModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
     private Integer staffId;
-    private String userName;
     private String email;
     private String password;
     private String passwordToken;
     private String verificationToken;
-    private Integer companyId;
     private Integer status;
+    private Integer companyId;
+
+    public UserAccount(){}
 }

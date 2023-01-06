@@ -7,4 +7,6 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Integ
 
     Optional<UserAccount> findByEmail(String email);
 
+    Optional<UserAccount> findByUserId(Integer userId);
+
 }

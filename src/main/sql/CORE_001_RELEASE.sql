@@ -1,4 +1,4 @@
---CORE_001_RELEASE.sql 08/11/2022 12:30 PM
+-- CORE_001_RELEASE.sql 08/11/2022 12:30 PM
 
 -- 14/12/2022 12:00 PM SHEENA AP
 -- Create database core with owner postgres
@@ -149,5 +149,6 @@ VALUES(1,'System Admin','INV-0001',120,1,'2020-11-01 17:03:06','2020-11-01 17:03
 -- Alter table user account to add column
 ALTER TABLE system.user_account add COLUMN staff_id INTEGER NOT NULL REFERENCES hr.staff(staff_id) DEFAULT 1;
 
-
-
+-- 05/01/2022 03:20 PM SHEENA AP
+-- Alter table user account to remove column user_name
+ALTER TABLE system.user_account DROP COLUMN user_name;

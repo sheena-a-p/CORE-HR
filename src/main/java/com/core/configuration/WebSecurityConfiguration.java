@@ -1,9 +1,8 @@
 package com.core.configuration;
-
 import com.core.security.AccessTokenProcessingFilter;
 import com.core.security.AccessTokenUserDetailsService;
 import com.core.security.config.SecurityConfig;
-import com.core.security.util.TokenGenerator;
+import com.core.util.TokenGenerator;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,25 +30,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(accessTokenProcessingFilter())
                 .authenticationProvider(preAuthenticatedAuthenticationProvider()).exceptionHandling().and().headers()
                 .and().sessionManagement().sessionCreationPolicy(STATELESS).and().securityContext().and().anonymous()
-                .and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/users/**")
+                .and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/user/login**")
                 .anonymous()
-                // .antMatchers("/users/**").anonymous()
-//                .antMatchers("/admin/listAllEmployees").hasAnyRole("EMPLOYEE","ADMIN")
-//                .antMatchers("/admin/**").access("hasRole('ADMIN')")
-//                .antMatchers("/employee/**").access("hasRole('EMPLOYEE')")
-//                .antMatchers("/space/**").hasAnyRole("EMPLOYEE", "ADMIN")
-//                .antMatchers("/booking/**").hasAnyRole("EMPLOYEE", "ADMIN")
-//                .antMatchers("/floorDesign/**").hasAnyRole("EMPLOYEE", "ADMIN")
-//                .antMatchers("/department/assignDepartment/**","/department/getDepartment","/department/getEmployeeDepartments").hasAnyRole("EMPLOYEE","ADMIN")
-//                .antMatchers("/department/**").hasAnyRole( "ADMIN")
-                .antMatchers("/users/**").permitAll()
-                .antMatchers("/v2/api-docs",
-                        "/v3/api-docs",
-                        "/swagger-resources/**",
-                        "/webjars/**",
-                        "/swagger-ui/**").permitAll()
-                .antMatchers("/google/**").permitAll()
-//                .antMatchers("/public/**").permitAll()
                 .anyRequest()
                 .authenticated();
     }

@@ -11,4 +11,6 @@ public class UserLoginForm {
     @NotNull
     private String password;
 
+    public UserLoginForm(){}
+
 }
