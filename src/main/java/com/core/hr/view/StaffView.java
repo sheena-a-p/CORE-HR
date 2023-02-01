@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class StaffView extends Staff {
-    private  String statusName;
-    private  String departmentName;
+    private String statusName;
+    private String departmentName;
     public StaffView(Staff staff) {
         super(staff);
     }

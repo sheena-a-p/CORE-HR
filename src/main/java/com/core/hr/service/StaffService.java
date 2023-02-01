@@ -9,7 +9,7 @@ public interface StaffService {
 
     void updateStaff(StaffForm staffForm);
 
-    Staff getStaff(Integer staffId);
+    Staff getStaffById(Integer staffId);
 
-    StaffView getStaffView(Integer staffId);
+    StaffView getStaffViewById(Integer staffId);
 }

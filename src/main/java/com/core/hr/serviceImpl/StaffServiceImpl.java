@@ -34,18 +34,12 @@ public class StaffServiceImpl extends CrudService implements StaffService {
         Staff staff = staffRepository.findById(staffForm.getStaffId()).orElseThrow(() ->{
             throw new StaffNotFoundException("Staff not found !");
         });
-        staff.setStaffName(staffForm.getStaffName());
-        staff.setEmail(staffForm.getEmail());
-        staff.setPhoneNumber(staffForm.getPhoneNumber());
-        staff.setAddress(staffForm.getAddress());
-        staff.setDepartment(staffForm.getDepartment());
-        staff.setDateOfBirth(staffForm.getDateOfBirth());
         staff = preUpdate(new Staff(staff,staffForm));
         staffRepository.save(staff);
     }
 
     @Override
-    public Staff getStaff(Integer staffId) {
+    public Staff getStaffById(Integer staffId) {
         Staff staff = staffRepository.findByStaffId(staffId).orElseThrow(() ->new NotFoundException("Staff not found !"));
         return staff;
     }
@@ -58,7 +52,7 @@ public class StaffServiceImpl extends CrudService implements StaffService {
         staff.setStaffModified(SecurityUtil.getCurrentStaffId());
         staff.setStatus(StaffStatusEnum.ACTIVE.getValue());
         staff.setCompanyId(SecurityUtil.getCurrentCompanyId());
-        return  staff;
+        return staff;
     }
 
     public Staff preUpdate(Staff staff) {
@@ -69,8 +63,8 @@ public class StaffServiceImpl extends CrudService implements StaffService {
     }
 
     @Override
-    public StaffView getStaffView(Integer staffId){
-        Staff staff = getStaff(staffId);
+    public StaffView getStaffViewById(Integer staffId){
+        Staff staff = getStaffById(staffId);
         return new StaffView(staff);
     }
 

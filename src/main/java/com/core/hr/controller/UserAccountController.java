@@ -24,8 +24,8 @@ public class UserAccountController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public LoginView userAccountLogin(@Valid @RequestBody UserLoginForm form) {
-        return userAccountService.userLogin(form);
+    public LoginView userAccountLogin(@Valid @RequestBody UserLoginForm userLoginForm) {
+        return userAccountService.userLogin(userLoginForm);
     }
 
     @PostMapping("/login/gmail")

@@ -27,6 +27,6 @@ public class StaffController {
 
     @PostMapping("/view")
     public StaffView viewStaff(@RequestParam(value = "staffId",required = true)Integer staffId) {
-        return staffService.getStaffView(staffId);
+        return staffService.getStaffViewById(staffId);
     }
 }

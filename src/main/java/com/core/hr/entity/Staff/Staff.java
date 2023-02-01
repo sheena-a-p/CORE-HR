@@ -2,14 +2,15 @@ package com.core.hr.entity.Staff;
 import com.core.hr.form.StaffForm;
 import com.core.hr.entity.System.AuditableModel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
-
 
 /* Entity for Staff
  * Author Sheena AP
  */
 @Entity
 @Data
+@NoArgsConstructor
 @Table(schema = "hr")
 public class Staff extends AuditableModel {
     @Id
@@ -64,8 +65,5 @@ public class Staff extends AuditableModel {
         this.setStaffCreated(staff.getStaffCreated());
         this.setStaffCreated(staff.getStaffCreated());
         this.setStaffModified(staff.getStaffModified());
-    }
-
-    public Staff(){
     }
 }
