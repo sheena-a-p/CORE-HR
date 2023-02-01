@@ -1,4 +1,4 @@
--- CORE_001_RELEASE.sql 08/11/2022 12:30 PM
+-- CORE_001_RELEASE.sql from 08/11/2022 12:30 PM
 
 -- 14/12/2022 12:00 PM SHEENA AP
 -- Create database core with owner postgres
@@ -149,6 +149,50 @@ VALUES(1,'System Admin','INV-0001',120,1,'2020-11-01 17:03:06','2020-11-01 17:03
 -- Alter table user account to add column
 ALTER TABLE system.user_account add COLUMN staff_id INTEGER NOT NULL REFERENCES hr.staff(staff_id) DEFAULT 1;
 
--- 05/01/2022 03:20 PM SHEENA AP
+-- 05/01/2023 03:20 PM SHEENA AP
 -- Alter table user account to remove column user_name
 ALTER TABLE system.user_account DROP COLUMN user_name;
+
+-- 06/01/2023 04:00 PM SHEENA AP
+-- Alter table staff to set not null constraint
+ALTER TABLE hr.staff ALTER COLUMN date_created SET NOT NULL;
+ALTER TABLE hr.staff ALTER COLUMN date_modified SET NOT NULL;
+ALTER TABLE hr.staff ALTER COLUMN staff_created SET NOT NULL;
+ALTER TABLE hr.staff ALTER COLUMN staff_modified SET NOT NULL;
+
+-- 06/01/2023 04:00 PM SHEENA AP
+-- Alter table company to set not null constraint
+ALTER TABLE org.company ALTER COLUMN date_created SET NOT NULL;
+ALTER TABLE org.company ALTER COLUMN date_modified SET NOT NULL;
+ALTER TABLE org.company ALTER COLUMN staff_created SET NOT NULL;
+ALTER TABLE org.company ALTER COLUMN staff_modified SET NOT NULL;
+
+-- 06/01/2023 04:00 PM SHEENA AP
+-- Alter table usr account to set not null constraint
+ALTER TABLE system.user_account ALTER COLUMN date_created SET NOT NULL;
+ALTER TABLE system.user_account ALTER COLUMN date_modified SET NOT NULL;
+ALTER TABLE system.user_account ALTER COLUMN staff_created SET NOT NULL;
+ALTER TABLE system.user_account ALTER COLUMN staff_modified SET NOT NULL;
+
+-- 06/01/2023 04:00 PM SHEENA AP
+-- Alter table usr account to add column google_refresh_token
+ALTER TABLE system.user_account ADD COLUMN google_refresh_token TEXT;
+
+-- 01/02/2023 10:00 AM SHEENA AP
+-- Alter table staff to add composite key (email, company_id)
+ALTER TABLE hr.staff ADD UNIQUE (email, company_id);
+
+-- 01/02/2023 10:00 AM SHEENA AP
+-- Alter table staff to drop constraint staff_email_key,company_created_by_fkey,company_updated_by_fkey
+ALTER TABLE hr.staff DROP CONSTRAINT staff_email_key;
+ALTER TABLE org.company DROP CONSTRAINT company_created_by_fkey;
+ALTER TABLE org.company DROP CONSTRAINT company_updated_by_fkey;
+
+-- 01/02/2023 11:00 AM SHEENA AP
+-- Alter table staff to foreign keys to staff_created,staff_modified
+ALTER TABLE org.company ADD FOREIGN KEY (staff_created) REFERENCES hr.staff(staff_id);
+ALTER TABLE org.company ADD FOREIGN KEY (staff_modified) REFERENCES hr.staff(staff_id);
+
+-- 01/02/2023 11:00 AM SHEENA AP
+-- Insert new company to org.company table
+INSERT INTO org.company(company_id,company_code,company_name,status,staff_created,staff_modified,date_created,date_modified) VALUES(2,'PMCR','Pinmiro',110,30,30,'2020-11-01 17:03:06','2020-11-01 17:03:06');
