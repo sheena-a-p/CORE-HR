@@ -1,6 +1,6 @@
 package com.core.security;
-import com.core.entity.system.UserAccount;
-import com.core.entity.system.UserAccountStatusEnum;
+import com.core.entity.System.UserAccount;
+import com.core.entity.System.UserAccountStatusEnum;
 import com.core.exception.InvalidTokenException;
 import com.core.exception.TokenExpiredException;
 import com.core.repository.UserAccountRepository;

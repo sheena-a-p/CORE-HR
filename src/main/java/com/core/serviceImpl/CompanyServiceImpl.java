@@ -1,5 +1,5 @@
 package com.core.serviceImpl;
-import com.core.entity.system.Company;
+import com.core.entity.System.Company;
 import com.core.repository.CompanyRepository;
 import com.core.service.CompanyService;
 import com.core.service.CrudService;

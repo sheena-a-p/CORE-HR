@@ -1,10 +1,14 @@
-package com.core.entity.system;
+package com.core.entity.System;
 import lombok.Data;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
+
+/* Audit filed class
+ * Author Sheena AP
+ */
 @Data
 @MappedSuperclass
 public class AuditableModel {
@@ -12,6 +16,6 @@ public class AuditableModel {
     private Date dateCreated;
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateModified;
-    private  Integer staffCreated;
-    private  Integer staffModified;
+    private Integer staffCreated;
+    private Integer staffModified;
 }

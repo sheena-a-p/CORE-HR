@@ -1,7 +1,11 @@
-package com.core.entity.system;
+package com.core.entity.System;
 import lombok.Data;
 import javax.persistence.*;
 
+
+/* Entity for company
+ * Author Sheena AP
+ */
 @Entity
 @Data
 @Table(schema = "org")

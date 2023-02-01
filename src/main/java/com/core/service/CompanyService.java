@@ -1,5 +1,5 @@
 package com.core.service;
-import com.core.entity.system.Company;
+import com.core.entity.System.Company;
 
 public interface CompanyService {
 

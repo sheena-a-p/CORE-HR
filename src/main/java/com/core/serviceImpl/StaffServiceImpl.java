@@ -1,8 +1,10 @@
 package com.core.serviceImpl;
-import com.core.entity.staff.Staff;
+import com.core.entity.Staff.Staff;
+import com.core.entity.Staff.StaffStatusEnum;
 import com.core.exception.NotFoundException;
+import com.core.exception.StaffNotFoundException;
+import com.core.form.StaffForm;
 import com.core.repository.StaffRepository;
-import com.core.service.CompanyService;
 import com.core.service.CrudService;
 import com.core.service.StaffService;
 import com.core.util.SecurityUtil;
@@ -15,42 +17,52 @@ import java.util.Date;
 public class StaffServiceImpl extends CrudService implements StaffService {
 
     @Autowired
-    private  StaffRepository staffRepository;
-
-    @Autowired
-    private CompanyService companyService;
+    StaffRepository staffRepository;
 
     @Override
-    public void createStaff(Staff staff) {
-        preCreate(staff);
+    public void createStaff(StaffForm staffForm) {
+        Staff staff = preCreate(new Staff(staffForm));
+        try {
+            staffRepository.save(staff);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateStaff(StaffForm staffForm) {
+        Staff staff = staffRepository.findById(staffForm.getStaffId()).orElseThrow(() ->{
+            throw new StaffNotFoundException("Staff not found !");
+        });
+        staff.setStaffName(staffForm.getStaffName());
+        staff.setEmail(staffForm.getEmail());
+        staff.setPhoneNumber(staffForm.getPhoneNumber());
+        staff.setAddress(staffForm.getAddress());
+        staff.setDepartment(staffForm.getDepartment());
+        staff.setDateOfBirth(staffForm.getDateOfBirth());
+        staff = preUpdate(new Staff(staff,staffForm));
         staffRepository.save(staff);
     }
 
     @Override
-    public void updateStaff(Staff staff) {
-        Staff staffDetails = staffRepository.findById(staff.getStaffId()).orElseThrow(() ->{
-            throw new NullPointerException("Staff not found !");
-        });
-        staffDetails = preUpdate(staffDetails);
-        staffRepository.save(staffDetails);
-    }
-
-    @Override
     public Staff getStaff(Integer staffId) {
-        return staffRepository.findById(staffId).orElseThrow(() ->new NotFoundException("Staff not found !"));
+        Staff staff = staffRepository.findByStaffId(staffId).orElseThrow(() ->new NotFoundException("Staff not found !"));
+        return staff;
     }
 
     public Staff preCreate(Staff staff) {
+        validateDuplicateEmailId(staff);
         staff.setDateCreated(new Date());
         staff.setDateModified(new Date());
         staff.setStaffCreated(SecurityUtil.getCurrentStaffId());
         staff.setStaffModified(SecurityUtil.getCurrentStaffId());
-        staff.setStatus(120);
+        staff.setStatus(StaffStatusEnum.ACTIVE.getValue());
         staff.setCompanyId(SecurityUtil.getCurrentCompanyId());
         return  staff;
     }
 
     public Staff preUpdate(Staff staff) {
+        validateDuplicateEmailId(staff);
         staff.setDateModified(new Date());
         staff.setStaffModified(SecurityUtil.getCurrentStaffId());
         return staff;
@@ -58,6 +70,19 @@ public class StaffServiceImpl extends CrudService implements StaffService {
 
     @Override
     public StaffView getStaffView(Integer staffId){
-        return  staffRepository.getStaffViewById(staffId);
+        Staff staff = getStaff(staffId);
+        return new StaffView(staff);
+    }
+
+    public void validateDuplicateEmailId(Staff staff){
+        Integer duplicateEmailCount = 0;
+        if(staff.getStaffId() != null){
+            duplicateEmailCount = staffRepository.countByStaffIdNotAndEmailAndCompanyId(staff.getStaffId(),staff.getEmail(),SecurityUtil.getCurrentCompanyId());
+        }else if(staff.getStaffId() == null){
+            duplicateEmailCount = staffRepository.countByEmailAndCompanyId(staff.getEmail(),SecurityUtil.getCurrentStaffId());
+        }
+        if(duplicateEmailCount != 0){
+            throw new IllegalArgumentException("Saving staff failed !, Email id already existing with another staff");
+        }
     }
 }

@@ -1,30 +1,32 @@
 package com.core.controller;
-import com.core.entity.staff.Staff;
+import com.core.form.StaffForm;
 import com.core.service.StaffService;
+import com.core.view.StaffView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
+/* Controller to manage Staff
+ * Author Sheena AP
+ */
 @RestController
 @RequestMapping("/staff")
 public class StaffController {
 
-    @Autowired(required = false)
+    @Autowired
     private StaffService staffService;
 
     @PostMapping("/save")
-    public void saveStaff(@Valid @RequestBody Staff staff){
-        try {
-            if (staff.getStaffId() == null){
-                staffService.createStaff(staff);
-            }else {
-                staffService.updateStaff(staff);
-            }
-        }catch (Exception e){
-            throw  new RuntimeException("Saving staff details failed !",e);
+    public void saveStaff(@Valid @RequestBody StaffForm staffForm){
+        if (staffForm.getStaffId() == null){
+            staffService.createStaff(staffForm);
+        }else {
+            staffService.updateStaff(staffForm);
         }
+    }
+
+    @PostMapping("/view")
+    public StaffView viewStaff(@RequestParam(value = "staffId",required = true)Integer staffId) {
+        return staffService.getStaffView(staffId);
     }
 }

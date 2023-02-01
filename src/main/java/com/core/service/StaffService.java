@@ -1,12 +1,13 @@
 package com.core.service;
-import com.core.entity.staff.Staff;
+import com.core.entity.Staff.Staff;
+import com.core.form.StaffForm;
 import com.core.view.StaffView;
 
 public interface StaffService {
 
-    void createStaff(Staff staff);
+    void createStaff(StaffForm staffForm);
 
-    void updateStaff(Staff staff);
+    void updateStaff(StaffForm staffForm);
 
     Staff getStaff(Integer staffId);
 

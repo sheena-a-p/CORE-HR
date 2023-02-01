@@ -1,7 +1,10 @@
-package com.core.entity.system;
+package com.core.entity.System;
 import lombok.Data;
 import javax.persistence.*;
 
+/* Entity for User Account
+ * Author Sheena AP
+ */
 @Entity
 @Data
 @Table(schema = "system")
@@ -14,6 +17,7 @@ public class UserAccount extends AuditableModel {
     private String password;
     private String passwordToken;
     private String verificationToken;
+    private String googleRefreshToken;
     private Integer status;
     private Integer companyId;
 

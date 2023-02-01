@@ -1,24 +1,29 @@
 package com.core.serviceImpl;
-import com.core.entity.system.UserAccount;
-import com.core.entity.system.UserAccountStatusEnum;
+import com.core.entity.System.UserAccount;
+import com.core.entity.System.UserAccountStatusEnum;
 import com.core.exception.BadRequestException;
+import com.core.exception.NotFoundException;
 import com.core.form.UserLoginForm;
 import com.core.repository.UserAccountRepository;
 import com.core.security.config.SecurityConfig;
 import com.core.service.CrudService;
 import com.core.service.UserAccountService;
 import com.core.exception.InvalidTokenException;
+import com.core.util.GoogleAuthenticator;
 import com.core.util.LanguageUtil;
 import com.core.exception.TokenExpiredException;
 import com.core.util.SecurityUtil;
 import com.core.util.TokenGenerator;
 import com.core.view.LoginView;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.core.util.TokenGenerator.Token;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Date;
 
 @Service
@@ -44,6 +49,9 @@ public class UserAccountServiceImpl extends CrudService implements UserAccountSe
 
     @Autowired
     private SecurityConfig securityConfig;
+
+    @Autowired
+    GoogleAuthenticator googleAuthenticator;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAccountServiceImpl.class);
 
@@ -107,4 +115,75 @@ public class UserAccountServiceImpl extends CrudService implements UserAccountSe
         return  new LoginView(user.getEmail(),accessToken,refreshToken);
     }
 
+    @Override
+    public LoginView login(String token, String data) throws BadRequestException, IOException, GeneralSecurityException {
+        String idToken = "";
+        String googleRefreshToken = "";
+        String email = "";
+        String subject = "";
+
+        if (token.isEmpty()) {
+            JSONObject googleTokens = googleAuthenticator.getGoogleRefreshToken(data);
+            if (googleTokens.has("id_token")) {
+                idToken = googleTokens.get("id_token").toString();
+            }
+            if (googleTokens.has("refresh_token")) {
+                googleRefreshToken = googleTokens.get("refresh_token").toString();
+            }
+            JSONObject idTokenData = googleAuthenticator.googleFilter(idToken);
+            String name = "";
+            String picture = "";
+            if (idTokenData.has("email")) email = idTokenData.get("email").toString();
+            if (idTokenData.has("name")) name = idTokenData.get("name").toString();
+            if (idTokenData.has("picture")) picture = idTokenData.get("picture").toString();
+            boolean isNewUser = false;
+            UserAccount user = userAccountRepository.findByEmailAndStatus(email, 1).orElseThrow(() -> {
+                throw new NotFoundException("user not found!");
+            });
+            String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@innovaturelabs.com$";
+            if (!email.matches(regex)) {
+                throw new BadRequestException(languageUtil.getTranslatedText("not.under.@innovaturelabs", null, "en"));
+            }
+            if (idTokenData.has("sub")) subject = idTokenData.get("sub").toString();
+            if (user.getPassword() == null) user.setPassword(passwordEncoder.encode(subject));
+            user.setDateModified(new Date());
+            user.setGoogleRefreshToken(googleRefreshToken);
+            user = userAccountRepository.save(user);
+            String id = String.format("%10d", user.getUserId());
+            Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
+            Token refreshToken = tokenGenerator.create(PURPOSE_REFRESH_TOKEN, id + subject, securityConfig.getRefreshTokenExpiry());
+            Integer callFromLogin = 0;
+            return new LoginView(user.getEmail(), accessToken, refreshToken);
+        } else {
+            JSONObject googleTokens = googleAuthenticator.getGoogleRefreshToken(data);
+            if (googleTokens.has("id_token")) {
+                idToken = googleTokens.get("id_token").toString();
+            }
+            if (googleTokens.has("refresh_token")) {
+                googleRefreshToken = googleTokens.get("refresh_token").toString();
+            }
+            JSONObject idTokenData = googleAuthenticator.googleFilter(idToken);
+            String name = "";
+            String picture = "";
+            if (idTokenData.has("email")) email = idTokenData.get("email").toString();
+            if (idTokenData.has("name")) name = idTokenData.get("name").toString();
+            if (idTokenData.has("picture")) picture = idTokenData.get("picture").toString();
+            boolean isNewUser = false;
+            UserAccount user = userAccountRepository.findByEmailAndStatus(email, 1).orElseThrow(() -> {
+                throw new NotFoundException("user not found!");
+            });
+            String regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@innovaturelabs.com$";
+            if (!email.matches(regex)) {
+                throw new BadRequestException(languageUtil.getTranslatedText("not.under.@innovaturelabs", null, "en"));
+            }
+            if (idTokenData.has("sub")) subject = idTokenData.get("sub").toString();
+            if (user.getPassword() == null) user.setPassword(subject);
+            user = userAccountRepository.save(user);
+            String id = String.format("%10d", user.getUserId());
+            Token accessToken = tokenGenerator.create(PURPOSE_ACCESS_TOKEN, id, securityConfig.getAccessTokenExpiry());
+            Token refreshToken = tokenGenerator.create(PURPOSE_REFRESH_TOKEN, id + subject, securityConfig.getRefreshTokenExpiry());
+            Integer callFromLogin = 0;
+            return new LoginView(user.getEmail(), accessToken, refreshToken);
+        }
+    }
 }

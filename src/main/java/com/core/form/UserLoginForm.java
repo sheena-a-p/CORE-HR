@@ -3,6 +3,9 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NonNull;
 
+/* Model class for User Login form
+ * Author Sheena AP
+ */
 @Data
 public class UserLoginForm {
 
